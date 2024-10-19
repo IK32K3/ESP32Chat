@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập tin nhắn"
+        android:minHeight="48dp" />
+
+    <Button
+        android:id="@+id/buttonSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gửi tin"
+        android:layout_gravity="center" />
+
+    <!-- TextView cho tin nhắn đã gửi -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sent_message_background"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:text="Tin nhắn đã gửi sẽ hiện ra ở đây"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- TextView cho tin nhắn nhận được -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/received_message_background"
+            android:padding="8dp"
+            android:textColor="#000000"
+            android:text="Kết quả nhận từ ESP32 sẽ hiển thị ở đây"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>
