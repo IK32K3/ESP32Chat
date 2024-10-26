@@ -9,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nhập tin nhắn"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:inputType="text"/>
+
 
     <Button
         android:id="@+id/buttonSend"
