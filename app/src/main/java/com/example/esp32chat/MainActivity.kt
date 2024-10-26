@@ -2,11 +2,12 @@ package com.example.esp32chat
 
 import android.os.Bundle
 import android.os.StrictMode
-import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStream
@@ -15,47 +16,45 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-    // Biến để lưu trữ địa chỉ IP của ESP32
-    private val esp32IpAddress: String = "http://<IP-ESP32>/post"
+    // Địa chỉ IP của ESP32 khi nó hoạt động ở chế độ AP
+    private val esp32IpAddress: String = "http://192.168.4.1"
 
     // Khai báo các view
     private lateinit var buttonSend: Button
     private lateinit var editTextMessage: EditText
-    private lateinit var textViewSent: TextView
     private lateinit var textViewReceived: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main) // Thiết lập layout
+        setContentView(R.layout.activity_main)
 
-        // Khởi tạo StrictMode để cho phép thực thi tác vụ mạng trên main thread
+        // Thiết lập StrictMode để cho phép hoạt động mạng
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        // Khai báo và gán các view bằng findViewById
+        // Gán các view chính
         buttonSend = findViewById(R.id.buttonSend)
         editTextMessage = findViewById(R.id.editTextMessage)
-        textViewSent = findViewById(R.id.textViewSent)
         textViewReceived = findViewById(R.id.textViewReceived)
 
-        // Khai báo sự kiện khi nhấn nút Gửi
+        // Xử lý sự kiện gửi tin nhắn
         buttonSend.setOnClickListener {
             val message = editTextMessage.text.toString().trim()
             if (message.isNotEmpty()) {
-                sendPostRequest(message) // Gửi tin nhắn đến ESP32
+                sendPostRequest(message)
+
+                // Ẩn bàn phím sau khi gửi
+                hideKeyboard()
             } else {
-                textViewReceived.text = "Vui lòng nhập tin nhắn" // Thông báo nếu tin nhắn trống
+                textViewReceived.text = "Vui lòng nhập tin nhắn"
             }
         }
     }
 
     private fun sendPostRequest(message: String) {
         try {
-            // Hiển thị tin nhắn đã gửi lên TextView
-            textViewSent.text = message
-
             // Thiết lập kết nối đến ESP32
-            val url = URL(esp32IpAddress)
+            val url = URL("$esp32IpAddress/")
             val urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = "POST"
             urlConnection.setRequestProperty("Content-Type", "text/plain")
@@ -76,11 +75,17 @@ class MainActivity : AppCompatActivity() {
             }
             inputStream.close()
 
-            // Cập nhật TextView để hiển thị phản hồi
+            // Hiển thị phản hồi
             textViewReceived.text = response.toString()
         } catch (e: Exception) {
             e.printStackTrace()
-            textViewReceived.text = "Lỗi kết nối đến ESP32" // Thông báo lỗi kết nối
+            textViewReceived.text = "Lỗi kết nối đến ESP32"
         }
+    }
+
+    private fun hideKeyboard() {
+        // Ẩn bàn phím sau khi nhấn nút gửi
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(editTextMessage.windowToken, 0)
     }
 }
